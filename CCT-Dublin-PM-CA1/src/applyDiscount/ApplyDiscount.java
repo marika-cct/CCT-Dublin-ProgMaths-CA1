@@ -85,4 +85,26 @@ public class ApplyDiscount {
         // If all of these pass, then we return true 
         return true;
     }
+    
+    /**
+     * Validating total purchase
+     * Customer total purchase must be a double
+     * 
+     * In this method we are making sure those rules above are applied, and if not
+     * we will send an error message that describes the issue.
+     */
+    private static boolean validTotalPurchase(String totalPurS){
+        try{
+            double totalPur = Double.parseDouble(totalPurS);
+            if (totalPur <= 0){
+                System.out.println("No purchases have been made.");
+                return false;
+            }
+            return true;
+        } catch (NumberFormatException error){
+            System.out.println("Numer Format Exception. Number must have a decimal point.");
+            return false;
+        }
+    }
+    
 }
