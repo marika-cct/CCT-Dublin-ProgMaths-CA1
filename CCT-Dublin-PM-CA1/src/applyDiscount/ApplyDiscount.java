@@ -54,4 +54,35 @@ public class ApplyDiscount {
         }
     }
     
+    /**
+     * Validating customer names
+     * Customer names will be an array that will be split by " " between the two names,
+     * where the [0] first name can only contain letters - no numbers, or other symbols
+     * and the [1] second name can contain letters AND numbers - no symbols
+     * 
+     * In this method we are making sure those rules above are applied, and if not
+     * we will send an error message that describes the issue.
+     */
+    private static boolean validName(String name){
+        // Here we are taking our parameter name as an array and splitting it with the space that should be between the first and second names
+        String[] names = name.split(" ");
+        
+        // First we are checking to make sure that the array names has two parts - the first and the second name
+        if (names.length != 2){
+            System.out.println("First or Second name was not found.");
+            return false;
+        }
+        // Second we are checking if first name contains anything other than letetrs
+        if (!names[0].matches("[A-Za-z]+")){
+            System.out.println("First name must only contain letters");
+            return false;
+        }
+        // Third we are checking if second name contains anything other than letters and numbers
+        if (!names[1].matches("[A-Za-z0-9]+")){
+            System.out.println("Second name must only contain letters and numbers");
+            return false;
+        }
+        // If all of these pass, then we return true 
+        return true;
+    }
 }
