@@ -95,14 +95,40 @@ public class ApplyDiscount {
      */
     private static boolean validTotalPurchase(String totalPurS){
         try{
+            // as we currently hold totalPur as string we need to parse it into double
             double totalPur = Double.parseDouble(totalPurS);
+            // we must check if the purchase is 0 or less as we cannot give a discount on 0 or negative purchases , otherwise we return true
             if (totalPur <= 0){
                 System.out.println("No purchases have been made.");
                 return false;
             }
             return true;
+        // here we are checking if there was a format error, a missing decimal point
         } catch (NumberFormatException error){
             System.out.println("Numer Format Exception. Number must have a decimal point.");
+            return false;
+        }
+    }
+    
+    /**
+     * Validating class
+     * Customer classes can only be 1, 2 or 3
+     * 
+     * In this method we are making sure those rules above are applied, and if not
+     * we will send an error message that describes the issue.
+     */
+    private static boolean validClass(String classS){
+        try {
+            // we need to parse class of type string it into int
+            int classI = Integer.parseInt(classS);
+            // we must check if class is not 1, 2 or 3, other return true
+            if (classI < 1 || classI > 3) {
+                System.out.println("Invalid number, Class must be 1, 2 or 3.");
+                return false;
+            }
+            return true;
+        } catch (NumberFormatException error) {
+            System.out.println("Numer Format Exception. Number must be an integer.");
             return false;
         }
     }
