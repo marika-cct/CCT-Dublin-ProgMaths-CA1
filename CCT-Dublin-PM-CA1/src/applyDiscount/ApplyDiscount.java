@@ -11,23 +11,15 @@ import java.time.LocalDate;
 
 public class ApplyDiscount {
 
-    public static void main(String[] args) {  
-        
-        /** Creating Variables to hold my two text files:
-         *  customerList that holds customer data we will be using
-         *  and customerDiscount that will take the final output and have that data stored there
-        */
-        String customerList = "src/applyDiscount/customers.txt";
-        String customerDiscount = "src/applyDiscount/customerDiscount.txt";
-        
+    public static void main(String[] args) {          
         try {
-            // Creating an instance of File and using it read its contents with scanner
-            File customers = new File(customerList);
+            // reading files content
+            File customers = new File("customers.txt");
             Scanner customersInfo = new Scanner(new FileReader(customers));
-            FileWriter writer = new FileWriter(customerDiscount);
+            FileWriter writer = new FileWriter("customerDiscount.txt");
             
             while(customersInfo.hasNextLine()){
-                // 1st line Customer Name (First and Surname together)
+                // 1st line Customer Name (First and last together)
                 String name = customersInfo.nextLine();
 
                 // 2nd line Total Purchase
@@ -72,18 +64,60 @@ public class ApplyDiscount {
                     if(classI == 1 && lastPurchase == 2024){
                         double discount = totalPurchase * 0.3;
                         double result = totalPurchase - discount;
-                    } else if (classI == 1 && lastPurchase < 2024 && lastPurchase >= 2019){
-                        double discount = totalPurchase * 0.3;
-                        double result = totalPurchase - discount;
+                        
+                        writer.write(firstName + " " + secondName + "\n");
+                        writer.write("Final Price: " + result + "\n");
                     }
-                    
-                    //Write valid result to customerdiscount.txt
-                    writer.write(firstName + " " + secondName + "\n");
-                    writer.write("Final Price: " + finalPrice + "\n");
+                    if (classI == 1 && lastPurchase < 2024 && lastPurchase >= 2019){
+                        double discount = totalPurchase * 0.2;
+                        double result = totalPurchase - discount;
+                        
+                        writer.write(firstName + " " + secondName + "\n");
+                        writer.write("Final Price: " + result + "\n");
+                    }
+                    if (classI == 1 && lastPurchase < 2019){
+                        double discount = totalPurchase * 0.1;
+                        double result = totalPurchase - discount;
+                        
+                        writer.write(firstName + " " + secondName + "\n");
+                        writer.write("Final Price: " + result + "\n");
+                    }
+                    if (classI == 2 && lastPurchase == 2024){
+                        double discount = totalPurchase * 0.15;
+                        double result = totalPurchase - discount;
+                        
+                        writer.write(firstName + " " + secondName + "\n");
+                        writer.write("Final Price: " + result + "\n");
+                    }
+                    if (classI == 2 && lastPurchase < 2024 && lastPurchase >= 2019){
+                        double discount = totalPurchase * 0.13;
+                        double result = totalPurchase - discount;
+                        
+                        writer.write(firstName + " " + secondName + "\n");
+                        writer.write("Final Price: " + result + "\n");
+                    }
+                    if (classI == 2 && lastPurchase < 2019){
+                        double discount = totalPurchase * 0.05;
+                        double result = totalPurchase - discount;
+                        
+                        writer.write(firstName + " " + secondName + "\n");
+                        writer.write("Final Price: " + result + "\n");
+                    }
+                    if (classI == 3 && lastPurchase == 2024){
+                        double discount = totalPurchase * 0.05;
+                        double result = totalPurchase - discount;
+                        
+                        writer.write(firstName + " " + secondName + "\n");
+                        writer.write("Final Price: " + result + "\n");
+                    }
+                    else {
+                        writer.write(firstName + " " + secondName + "\n");
+                        writer.write("Final Price: " + totalPurchase + "\n");
+                    } 
                 } else {
-                    writer.write("Invalid data for customer: " + name + "\n");
+                    writer.write("Invalid data for customer: " + name + "\n"); 
                 }
-            
+            writer.close();
             }
         } catch(IOException e){
             System.out.println("IO Exception. Error wiriting new file");
