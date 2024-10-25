@@ -11,23 +11,16 @@ import java.time.LocalDate;
 
 public class ApplyDiscount {
 
-    public static void main(String[] args) {  
-        
-        /** Creating Variables to hold my two text files:
-         *  customerList that holds customer data we will be using
-         *  and customerDiscount that will take the final output and have that data stored there
-        */
-        String customerList = "src/applyDiscount/customers.txt";
-        String customerDiscount = "src/applyDiscount/customerDiscount.txt";
-        
+    public static void main(String[] args) {          
         try {
-            // Creating an instance of File and using it read its contents with scanner
-            File customers = new File(customerList);
+            // reading files content
+            File customers = new File("src/applyDiscount/customers.txt");
             Scanner customersInfo = new Scanner(new FileReader(customers));
-            FileWriter writer = new FileWriter(customerDiscount);
+            File customersDiscount = new File("src/applyDiscount/customerDiscount.txt");
+            FileWriter writer = new FileWriter(customersDiscount);
             
             while(customersInfo.hasNextLine()){
-                // 1st line Customer Name (First and Surname together)
+                // 1st line Customer Name (First and last together)
                 String name = customersInfo.nextLine();
 
                 // 2nd line Total Purchase
@@ -47,8 +40,35 @@ public class ApplyDiscount {
                 
                 // Creating a current year variable to save the current year
                 int currentYear = LocalDate.now().getYear();
+                
+                 
+                //Validating customers info before we calculate the discount
+                if (validName(name) && validTotalPurchase(totalPurS) && validClass(classS) && validYear(lastPurchaseS, currentYear)) {
+                    //  Customer names is array that is split using the " " space between the [0] first and [1] second name
+                    String[] names = name.split(" ");
+                    String firstName = names[0];
+                    String secondName = names[1];
+                    
+                    // Parse totalpur to double
+                    double totalPurchase = Double.parseDouble(totalPurS);
+                    
+                    // Parse class to int
+                    int classI = Integer.parseInt(classS);
+                    
+                    // Parse lastPurchase to int
+                    int lastPurchase = Integer.parseInt(lastPurchaseS);
+                    
+                    double discountValue = discountApply(classI, lastPurchase, totalPurchase);
+                    double finalDiscount = totalPurchase * discountValue;
+                    
+                    //Write valid result to customerdiscount.txt
+                    writer.write(firstName + " " + secondName + "\n");
+                    writer.write("Final Price: " + finalDiscount + "\n");
+                } else {
+                    writer.write("Invalid data for customer: " + name + "\n"); 
+                }
+            writer.close();
             }
-            
         } catch(IOException e){
             System.out.println("IO Exception. Error wiriting new file");
         }
@@ -135,7 +155,7 @@ public class ApplyDiscount {
     
      /**
      * Validating purchase year
-     * We will only accept to year 2019 
+     * We will only accept to year 2010 
      * 
      * In this method we are making sure those rules above are applied, and if not
      * we will send an error message that describes the issue.
@@ -144,7 +164,7 @@ public class ApplyDiscount {
         try {
             // parse our lastPurchaseS string into int
             int yearInt = Integer.parseInt(lastPurchaseS);
-            if (yearInt > 2019 && yearInt <= currentYear) {
+            if (yearInt > 2010 && yearInt <= currentYear) {
                 return true;
             } else {
                 System.out.println("Year must be a valid year.");
@@ -155,4 +175,39 @@ public class ApplyDiscount {
             return false;
         }
     }
+    
+    private static double discountApply(int classI, int lastPur, double totalPur){
+         if(totalPur == 0){
+             return 0;
+         }
+         if (classI == 1){
+                 if(lastPur == 2024){
+                     return 0.7;
+                 }
+                 else if (lastPur < 2024 && lastPur >= 2019){
+                     return 0.8;
+                 }
+                 else if (lastPur < 2019){
+                     return 0.9;
+                 }
+         }
+         if (classI == 2){
+             if(lastPur == 2024){
+                     return 0.85;
+                 }
+                 else if (lastPur < 2024 && lastPur >= 2019){
+                     return 0.87;
+                 }
+                 else if (lastPur < 2019){
+                     return 0.95;
+                 }
+         }
+         if (classI == 3){
+             if(lastPur == 2024){
+                     return 0.97;
+                 }
+         }
+         return 0;
+    }
+                 
 }
