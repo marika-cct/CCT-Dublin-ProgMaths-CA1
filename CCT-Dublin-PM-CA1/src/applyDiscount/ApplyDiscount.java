@@ -133,4 +133,26 @@ public class ApplyDiscount {
         }
     }
     
+     /**
+     * Validating purchase year
+     * We will only accept to year 2019 
+     * 
+     * In this method we are making sure those rules above are applied, and if not
+     * we will send an error message that describes the issue.
+     */
+    private static boolean validYear(String lastPurchaseS, int currentYear){
+        try {
+            // parse our lastPurchaseS string into int
+            int yearInt = Integer.parseInt(lastPurchaseS);
+            if (yearInt > 2019 && yearInt <= currentYear) {
+                return true;
+            } else {
+                System.out.println("Year must be a valid year.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Numer Format Exception. Number must be an integer.");
+            return false;
+        }
+    }
 }
