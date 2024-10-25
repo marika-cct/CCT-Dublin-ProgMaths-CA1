@@ -14,9 +14,10 @@ public class ApplyDiscount {
     public static void main(String[] args) {          
         try {
             // reading files content
-            File customers = new File("customers.txt");
+            File customers = new File("src/applyDiscount/customers.txt");
             Scanner customersInfo = new Scanner(new FileReader(customers));
-            FileWriter writer = new FileWriter("customerDiscount.txt");
+            File customersDiscount = new File("src/applyDiscount/customerDiscount.txt");
+            FileWriter writer = new FileWriter(customersDiscount);
             
             while(customersInfo.hasNextLine()){
                 // 1st line Customer Name (First and last together)
@@ -57,63 +58,12 @@ public class ApplyDiscount {
                     // Parse lastPurchase to int
                     int lastPurchase = Integer.parseInt(lastPurchaseS);
                     
-                    //Calculating final price based on class and last purchase using below method
-                    if(totalPurchase == 0){
-                        System.out.println("No discount applied");
-                    }
-                    if(classI == 1 && lastPurchase == 2024){
-                        double discount = totalPurchase * 0.3;
-                        double result = totalPurchase - discount;
-                        
-                        writer.write(firstName + " " + secondName + "\n");
-                        writer.write("Final Price: " + result + "\n");
-                    }
-                    if (classI == 1 && lastPurchase < 2024 && lastPurchase >= 2019){
-                        double discount = totalPurchase * 0.2;
-                        double result = totalPurchase - discount;
-                        
-                        writer.write(firstName + " " + secondName + "\n");
-                        writer.write("Final Price: " + result + "\n");
-                    }
-                    if (classI == 1 && lastPurchase < 2019){
-                        double discount = totalPurchase * 0.1;
-                        double result = totalPurchase - discount;
-                        
-                        writer.write(firstName + " " + secondName + "\n");
-                        writer.write("Final Price: " + result + "\n");
-                    }
-                    if (classI == 2 && lastPurchase == 2024){
-                        double discount = totalPurchase * 0.15;
-                        double result = totalPurchase - discount;
-                        
-                        writer.write(firstName + " " + secondName + "\n");
-                        writer.write("Final Price: " + result + "\n");
-                    }
-                    if (classI == 2 && lastPurchase < 2024 && lastPurchase >= 2019){
-                        double discount = totalPurchase * 0.13;
-                        double result = totalPurchase - discount;
-                        
-                        writer.write(firstName + " " + secondName + "\n");
-                        writer.write("Final Price: " + result + "\n");
-                    }
-                    if (classI == 2 && lastPurchase < 2019){
-                        double discount = totalPurchase * 0.05;
-                        double result = totalPurchase - discount;
-                        
-                        writer.write(firstName + " " + secondName + "\n");
-                        writer.write("Final Price: " + result + "\n");
-                    }
-                    if (classI == 3 && lastPurchase == 2024){
-                        double discount = totalPurchase * 0.05;
-                        double result = totalPurchase - discount;
-                        
-                        writer.write(firstName + " " + secondName + "\n");
-                        writer.write("Final Price: " + result + "\n");
-                    }
-                    else {
-                        writer.write(firstName + " " + secondName + "\n");
-                        writer.write("Final Price: " + totalPurchase + "\n");
-                    } 
+                    double discountValue = discountApply(classI, lastPurchase, totalPurchase);
+                    double finalDiscount = totalPurchase * discountValue;
+                    
+                    //Write valid result to customerdiscount.txt
+                    writer.write(firstName + " " + secondName + "\n");
+                    writer.write("Final Price: " + finalDiscount + "\n");
                 } else {
                     writer.write("Invalid data for customer: " + name + "\n"); 
                 }
@@ -225,4 +175,39 @@ public class ApplyDiscount {
             return false;
         }
     }
+    
+    private static double discountApply(int classI, int lastPur, double totalPur){
+         if(totalPur == 0){
+             return 0;
+         }
+         if (classI == 1){
+                 if(lastPur == 2024){
+                     return 0.7;
+                 }
+                 else if (lastPur < 2024 && lastPur >= 2019){
+                     return 0.8;
+                 }
+                 else if (lastPur < 2019){
+                     return 0.9;
+                 }
+         }
+         if (classI == 2){
+             if(lastPur == 2024){
+                     return 0.85;
+                 }
+                 else if (lastPur < 2024 && lastPur >= 2019){
+                     return 0.87;
+                 }
+                 else if (lastPur < 2019){
+                     return 0.95;
+                 }
+         }
+         if (classI == 3){
+             if(lastPur == 2024){
+                     return 0.97;
+                 }
+         }
+         return 0;
+    }
+                 
 }
