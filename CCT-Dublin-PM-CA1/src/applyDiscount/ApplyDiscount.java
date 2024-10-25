@@ -47,8 +47,44 @@ public class ApplyDiscount {
                 
                 // Creating a current year variable to save the current year
                 int currentYear = LocalDate.now().getYear();
-            }
+                
+                 
+                //Validating customers info before we calculate the discount
+                if (validName(name) && validTotalPurchase(totalPurS) && validClass(classS) && validYear(lastPurchaseS, currentYear)) {
+                    //  Customer names is array that is split using the " " space between the [0] first and [1] second name
+                    String[] names = name.split(" ");
+                    String firstName = names[0];
+                    String secondName = names[1];
+                    
+                    // Parse totalpur to double
+                    double totalPurchase = Double.parseDouble(totalPurS);
+                    
+                    // Parse class to int
+                    int classI = Integer.parseInt(classS);
+                    
+                    // Parse lastPurchase to int
+                    int lastPurchase = Integer.parseInt(lastPurchaseS);
+                    
+                    //Calculating final price based on class and last purchase using below method
+                    if(totalPurchase == 0){
+                        System.out.println("No discount applied");
+                    }
+                    if(classI == 1 && lastPurchase == 2024){
+                        double discount = totalPurchase * 0.3;
+                        double result = totalPurchase - discount;
+                    } else if (classI == 1 && lastPurchase < 2024 && lastPurchase >= 2019){
+                        double discount = totalPurchase * 0.3;
+                        double result = totalPurchase - discount;
+                    }
+                    
+                    //Write valid result to customerdiscount.txt
+                    writer.write(firstName + " " + secondName + "\n");
+                    writer.write("Final Price: " + finalPrice + "\n");
+                } else {
+                    writer.write("Invalid data for customer: " + name + "\n");
+                }
             
+            }
         } catch(IOException e){
             System.out.println("IO Exception. Error wiriting new file");
         }
@@ -135,7 +171,7 @@ public class ApplyDiscount {
     
      /**
      * Validating purchase year
-     * We will only accept to year 2019 
+     * We will only accept to year 2010 
      * 
      * In this method we are making sure those rules above are applied, and if not
      * we will send an error message that describes the issue.
@@ -144,7 +180,7 @@ public class ApplyDiscount {
         try {
             // parse our lastPurchaseS string into int
             int yearInt = Integer.parseInt(lastPurchaseS);
-            if (yearInt > 2019 && yearInt <= currentYear) {
+            if (yearInt > 2010 && yearInt <= currentYear) {
                 return true;
             } else {
                 System.out.println("Year must be a valid year.");
