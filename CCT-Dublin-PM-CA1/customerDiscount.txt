@@ -1,0 +1,15 @@
+Sam Weiss
+Final Price: 455.01
+Cristiani Eccher
+Final Price: 1477.31
+Declan Walsh
+Final Price: 189.7
+Barry Smart
+Final Price: 2780.0
+Katie White
+Final Price: 0.0
+Peter Nolan
+Final Price: 159.79999999999998
+Invalid data for customer: Daragh Nolan
+Patrick Moss
+Final Price: 79.2
