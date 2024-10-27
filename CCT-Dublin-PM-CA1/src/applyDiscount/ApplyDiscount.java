@@ -1,8 +1,10 @@
 // Importing relevant Java libraries
 package applyDiscount;
+
 import java.io.*;
 import java.util.Scanner;
 import java.time.LocalDate;
+
 
 /**
  * @author Marika
@@ -11,66 +13,96 @@ import java.time.LocalDate;
 
 public class ApplyDiscount {
 
-    public static void main(String[] args) {          
-        try {
-            // reading files content
-            File customers = new File("src/applyDiscount/customers.txt");
-            Scanner customersInfo = new Scanner(new FileReader(customers));
-            File customersDiscount = new File("src/applyDiscount/customerDiscount.txt");
-            FileWriter writer = new FileWriter(customersDiscount);
-            
-            while(customersInfo.hasNextLine()){
-                // 1st line Customer Name (First and last together)
-                String name = customersInfo.nextLine();
+    public static void main(String[] args) {
 
-                // 2nd line Total Purchase
-                String totalPurS = customersInfo.nextLine();
-                
-                // 3rd line Class
+        try {
+            File customers = new File("customers.txt");
+            Scanner customersInfo = new Scanner(new FileReader(customers));
+            File customersDiscount = new File("customerDiscount.txt");
+            FileWriter writer = new FileWriter(customersDiscount);
+
+            while (customersInfo.hasNextLine()) {
+                // Assigning line 1 in the loop as name
+                String nameS = customersInfo.nextLine();
+
+                // Assigning line 2 in the loop as total
+                String totalS = customersInfo.nextLine();
+
+                // Assigning line 3 in the loop as class
                 String classS = customersInfo.nextLine();
-                
-                // 4th line Last Purchase
-                String lastPurchaseS = customersInfo.nextLine();
-                
-                // Check for incomplete data/blank field. Skipping to next cst if data missing
-                if (name.isEmpty() || totalPurS.isEmpty() || classS.isEmpty() || lastPurchaseS.isEmpty()) {
-                    writer.write("Data is missing. Customer is not recognised by the system.\n");
-                    continue;
+
+                // Assigning line 4 in the loop as year
+                String yearS = customersInfo.nextLine();
+
+                // We are checking if any of the fields above are empty, and printing en error messages directly
+                // explaining what field is missing
+                if (nameS.isEmpty()){
+                    System.out.println("Name field is empty. Please input your first and second name.");
                 }
-                
-                // Creating a current year variable to save the current year
-                int currentYear = LocalDate.now().getYear();
-                
-                 
-                //Validating customers info before we calculate the discount
-                if (validName(name) && validTotalPurchase(totalPurS) && validClass(classS) && validYear(lastPurchaseS, currentYear)) {
-                    //  Customer names is array that is split using the " " space between the [0] first and [1] second name
-                    String[] names = name.split(" ");
+                else if (totalS.isEmpty()) {
+                    System.out.println("Total purchase field is missing. Please input your total purchase");
+                }
+                else if (classS.isEmpty()) {
+                    System.out.println("Class field is empty. Please input a class of 1, 2 or 3.");
+                }
+                else if (yearS.isEmpty()) {
+                    System.out.println();
+                }
+
+                /** This is another solution however we dont get a specific error message that would notify the user what
+                 *  exact field they are missing.
+                 *
+                 * if (nameS.isEmpty() || totalS.isEmpty() || classS.isEmpty() || yearS.isEmpty()) {
+                 *     System.out.println("Data file is empty.");
+                 * }
+                */
+
+                // Using our validation methods to make sure inputs are correct type, lenght or format, depending on
+                // the field .
+                if (validName(nameS) && validTotalPurchase(totalS) && validClass(classS) && validYear(yearS)) {
+                    //  Names is array or two items, that is split using the " " space between the [0] first and
+                    //  [1] second name.
+                    String[] names = nameS.split(" ");
                     String firstName = names[0];
                     String secondName = names[1];
-                    
-                    // Parse totalpur to double
-                    double totalPurchase = Double.parseDouble(totalPurS);
-                    
+
+                    // Parse total purchase to double
+                    double totalPurchase = Double.parseDouble(totalS);
+
                     // Parse class to int
                     int classI = Integer.parseInt(classS);
-                    
-                    // Parse lastPurchase to int
-                    int lastPurchase = Integer.parseInt(lastPurchaseS);
-                    
+
+                    // Parse last purchase to int
+                    int lastPurchase = Integer.parseInt(yearS);
+
+                    // Calculating the discount value of customers & initialising finalDiscount to use for our final
+                    // output to the user and text file
                     double discountValue = discountApply(classI, lastPurchase, totalPurchase);
-                    double finalDiscount = totalPurchase * discountValue;
-                    
-                    //Write valid result to customerdiscount.txt
-                    writer.write(firstName + " " + secondName + "\n");
-                    writer.write("Final Price: " + finalDiscount + "\n");
-                } else {
-                    writer.write("Invalid data for customer: " + name + "\n"); 
+                    double finalDiscount;
+
+                    // First we are checking if the discount value is 0. We then will print a personalised message to
+                    // users, that will tell them that they did not receive any discount.
+                    if (discountValue == 0){
+                        finalDiscount = totalPurchase;
+
+                        //Writing a custom message to let user know that their final price has not changed.
+                        writer.write(firstName + " " + secondName + "\n" + "Your Final Price: " + finalDiscount + "\nYour final price has not changed\n\n");
+                    }
+                    else {
+                        finalDiscount = totalPurchase * discountValue;
+
+                        //Writing a custom message to let user know that their final price has changed, and display their discount value
+                        writer.write(firstName + " " + secondName + "\n" + "Your Final Price: " + finalDiscount + "\n\n");
+                    }
                 }
-            writer.close();
+                else {
+                    writer.write("Invalid data for customer: " + nameS + "\n\n");
+                }
             }
-        } catch(IOException e){
-            System.out.println("IO Exception. Error wiriting new file");
+            writer.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
     
@@ -88,8 +120,8 @@ public class ApplyDiscount {
         String[] names = name.split(" ");
         
         // First we are checking to make sure that the array names has two parts - the first and the second name
-        if (names.length != 2){
-            System.out.println("First or Second name was not found.");
+        if (names.length > 2 && names.length < 2){
+            System.out.println("Input first and second name.");
             return false;
         }
         // Second we are checking if first name contains anything other than letetrs
@@ -113,21 +145,15 @@ public class ApplyDiscount {
      * In this method we are making sure those rules above are applied, and if not
      * we will send an error message that describes the issue.
      */
-    private static boolean validTotalPurchase(String totalPurS){
-        try{
-            // as we currently hold totalPur as string we need to parse it into double
-            double totalPur = Double.parseDouble(totalPurS);
-            // we must check if the purchase is 0 or less as we cannot give a discount on 0 or negative purchases , otherwise we return true
-            if (totalPur <= 0){
-                System.out.println("No purchases have been made.");
-                return false;
-            }
-            return true;
-        // here we are checking if there was a format error, a missing decimal point
-        } catch (NumberFormatException error){
-            System.out.println("Numer Format Exception. Number must have a decimal point.");
+    private static boolean validTotalPurchase(String totalS){
+        // as we currently hold totalPur as string we need to parse it into double
+        double totalPur = Double.parseDouble(totalS);
+        // we must check if the purchase is 0 or less as we cannot give a discount on 0 or negative purchases , otherwise we return true
+        if (totalPur <= 0){
+            System.out.println("No purchases have been made.");
             return false;
         }
+        return true;
     }
     
     /**
@@ -138,19 +164,14 @@ public class ApplyDiscount {
      * we will send an error message that describes the issue.
      */
     private static boolean validClass(String classS){
-        try {
-            // we need to parse class of type string it into int
-            int classI = Integer.parseInt(classS);
-            // we must check if class is not 1, 2 or 3, other return true
-            if (classI < 1 || classI > 3) {
-                System.out.println("Invalid number, Class must be 1, 2 or 3.");
-                return false;
-            }
-            return true;
-        } catch (NumberFormatException error) {
-            System.out.println("Numer Format Exception. Number must be an integer.");
+        // we need to parse class of type string it into int
+        int classI = Integer.parseInt(classS);
+        // we must check if class is not 1, 2 or 3, other return true
+        if (classI < 1 || classI > 3) {
+            System.out.println("Invalid number, Class must be 1, 2 or 3.");
             return false;
         }
+        return true;
     }
     
      /**
@@ -160,26 +181,30 @@ public class ApplyDiscount {
      * In this method we are making sure those rules above are applied, and if not
      * we will send an error message that describes the issue.
      */
-    private static boolean validYear(String lastPurchaseS, int currentYear){
-        try {
-            // parse our lastPurchaseS string into int
-            int yearInt = Integer.parseInt(lastPurchaseS);
-            if (yearInt > 2010 && yearInt <= currentYear) {
-                return true;
-            } else {
-                System.out.println("Year must be a valid year.");
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Numer Format Exception. Number must be an integer.");
+    private static boolean validYear(String yearS){
+        // parse our lastPurchaseS string into int
+        int yearInt = Integer.parseInt(yearS);
+        // if the year isnt between 2024 and 2000 for our example, the date will be invalid
+        if (yearInt > 2000 && yearInt <= 2024) {
+            return true;
+        } else {
+            System.out.println("Year must be a valid year.");
             return false;
         }
     }
-    
+
+    /**
+     * Calculating the discount based on class and last purchase year
+     *
+     * Returning as doubles, based on the discount. Example: Class 1, if last purchase was made in 2024 then the total
+     * would be discounted by 30%. Discounting a value of 100% cost, by 30%, would leave us with 70% final price after discount.
+     */
     private static double discountApply(int classI, int lastPur, double totalPur){
+        // Check if total purchase is less than zero before proceeding
          if(totalPur == 0){
              return 0;
          }
+         // Dividing the calculations based on class to keep code neat and more readable
          if (classI == 1){
                  if(lastPur == 2024){
                      return 0.7;
@@ -191,6 +216,7 @@ public class ApplyDiscount {
                      return 0.9;
                  }
          }
+         // Calculations for class 2
          if (classI == 2){
              if(lastPur == 2024){
                      return 0.85;
@@ -202,12 +228,13 @@ public class ApplyDiscount {
                      return 0.95;
                  }
          }
+         // Calculations for class 3
          if (classI == 3){
              if(lastPur == 2024){
                      return 0.97;
-                 }
+             }
+             else return 0;
          }
          return 0;
-    }
-                 
+    }              
 }
